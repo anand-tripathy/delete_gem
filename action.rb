@@ -38,16 +38,12 @@ require 'awesome_print'
 require 'octokit'
 require 'json'
 
-puts "inputs from yml #{ARGV}"
-p "token from ruby args #{ARGV[0]}"
-puts "token from yml #{$token}"
-puts "token from github env #{ENV['GITHUB_TOKEN']}"
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 
 org_query = <<-GRAPHQL
 query {
-  organization(login: "#{$3}") {
-    registryPackages(name: "#{$1}", first: 100){
+  organization(login: "#{ARGV[2]}") {
+    registryPackages(name: "#{ARGV[0]}", first: 100){
       nodes{
         versions(last:100){
           nodes{
@@ -63,7 +59,7 @@ GRAPHQL
 
 repo_query = <<-GRAPHQL
 query {
-  repository(owner: "#{ENV['OWNER']}",name: "#{$4}") {
+  repository(owner: "#{ENV['OWNER']}",name: "#{ARGV[3]}") {
     registryPackages(name: "#{$1}", first: 100){
       nodes{
         versions(last:100){
@@ -78,5 +74,5 @@ query {
 }
 GRAPHQL
 
-response = client.post '/graphql', { query: "#{(( !$3.nil? && $3.present?) ? org_query : repo_query)}" }.to_json
+response = client.post '/graphql', { query: "#{(( !ARGV[2].nil? && ARGV[2].present?) ? org_query : repo_query)}" }.to_json
 ap response
