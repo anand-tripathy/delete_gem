@@ -74,5 +74,5 @@ query {
 }
 GRAPHQL
 
-response = client.post '/graphql', { query: "#{($3.present? ? org_query : repo_query)}" }.to_json
+response = client.post '/graphql', { query: "#{(( !$3.nil? && $3.present?) ? org_query : repo_query)}" }.to_json
 ap response
