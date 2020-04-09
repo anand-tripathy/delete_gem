@@ -1,9 +1,9 @@
-require "octokit"
-require "json"
-#
-# Each Action has an event passed to it.
-event = JSON.parse(File.read(ENV['GITHUB_EVENT_PATH']))
-puts event.inspect
+# require "octokit"
+# require "json"
+# #
+# # Each Action has an event passed to it.
+# event = JSON.parse(File.read(ENV['GITHUB_EVENT_PATH']))
+# puts event.inspect
 #
 # # Use GITHUB_TOKEN to interact with the GitHub API
 # client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
@@ -38,7 +38,7 @@ require 'awesome_print'
 require 'octokit'
 require 'json'
 
-client = Octokit::Client.new(access_token: ENV['GEM_HOST_API_KEY'])
+client = Octokit::Client.new(access_token: "#{$2}")
 
 org_query = <<-GRAPHQL
 query {
