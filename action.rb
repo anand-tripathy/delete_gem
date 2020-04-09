@@ -39,7 +39,9 @@ require 'octokit'
 require 'json'
 
 puts "inputs from yml #{ARGV}"
-
+puts "environments  from yml #{ENV['PACKAGE-NAME']}"
+puts "environments  from yml #{ENV['PACKAGE_NAME']}"
+puts "inputs parsed #{JSON.parse(ARGV)}"
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 
 org_query = <<-GRAPHQL
