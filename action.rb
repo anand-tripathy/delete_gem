@@ -38,6 +38,8 @@ require 'awesome_print'
 require 'octokit'
 require 'json'
 
+puts "inputs from yml #{ARGV}"
+
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 
 org_query = <<-GRAPHQL
