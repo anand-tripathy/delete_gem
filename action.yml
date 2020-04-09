@@ -11,7 +11,7 @@ inputs:
       If num-old-versions-to-delete is used the token also needs the read packages scope.
       Defaults to github.token scoped to the repo running the action. To delete package versions
       of a package outside the repo the action is running in use a Personal Access Token stored as a secret.
-    required: false
+    required: true
     default: ${{ github.token }}
   organisation-name:
     description: >
