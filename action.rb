@@ -38,7 +38,9 @@ require 'awesome_print'
 require 'octokit'
 require 'json'
 
-puts "token from yml #{$2}"
+puts "inputs from yml #{ARGV}"
+p "token from ruby args #{ARGV[0]}"
+puts "token from yml #{$token}"
 puts "token from github env #{ENV['GITHUB_TOKEN']}"
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 
