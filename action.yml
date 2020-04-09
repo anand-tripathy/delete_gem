@@ -33,7 +33,7 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - package-name: ${{ inputs.package-name }}
-    - ${{ inputs.token }}
-    - ${{ inputs.organisation-name }}
-    - ${{ inputs.repo-name }}
+    - '{package-name: ${{ inputs.package-name }}}'
+    - '{token: ${{ inputs.token }}}'
+    - '{organisation-name: ${{ inputs.organisation-name }}}'
+    - '{repo-name: ${{ inputs.repo-name }}}'
