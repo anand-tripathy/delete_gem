@@ -1,0 +1,36 @@
+name: 'Delete Gem'
+description: 'Delete specific version gem from github package'
+inputs:
+  package-name:
+    description: >
+      Name of the package containing the version to delete.
+    required: true
+  token:
+    description: >
+      Token with the necessary scopes to delete package versions.
+      If num-old-versions-to-delete is used the token also needs the read packages scope.
+      Defaults to github.token scoped to the repo running the action. To delete package versions
+      of a package outside the repo the action is running in use a Personal Access Token stored as a secret.
+    required: false
+    default: ${{ github.token }}
+  organisation-name:
+    description: >
+      Name of the Organisation is packages are under organisation
+    required: false
+    default: ''
+  repo-name:
+    description: >
+      Name of the repo for packages are under organisation
+    required: false
+    default: ''
+outputs:
+  id: # id of output
+    description: 'id of delete gem package'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.package-name }}
+    - ${{ inputs.token }}
+    - ${{ inputs.organisation-name }}
+    - ${{ inputs.repo-name }}
