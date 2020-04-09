@@ -1,5 +1,8 @@
 name: 'Delete Gem'
 description: 'Delete specific version gem from github package'
+branding:
+  color: purple
+  icon: box
 inputs:
   package-name:
     description: >
@@ -12,16 +15,16 @@ inputs:
       Defaults to github.token scoped to the repo running the action. To delete package versions
       of a package outside the repo the action is running in use a Personal Access Token stored as a secret.
     required: true
-    default: ${{ github.token }}
+    default: ''
   organisation-name:
     description: >
       Name of the Organisation is packages are under organisation
-    required: false
+    required: true
     default: ''
   repo-name:
     description: >
       Name of the repo for packages are under organisation
-    required: false
+    required: true
     default: ''
 outputs:
   id: # id of output
