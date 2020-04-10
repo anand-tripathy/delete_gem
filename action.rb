@@ -64,7 +64,7 @@ GRAPHQL
   puts " inside if version present check with query #{mutation}"
   mutation_response = client.post '/graphql', {query: mutation}.to_json
   
-  mutation_response
+  ap mutation_response
 
 end
 
