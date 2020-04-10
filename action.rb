@@ -56,7 +56,7 @@ puts "version object #{version_obj}"
 if !version_obj.nil?
   mutation = <<-GRAPHQL
 mutation {
-  deletePackageVersion (input:{packageVersionId: #{version_obj[:id]}}){
+  deletePackageVersion (input:{packageVersionId: "#{version_obj[:id]}"}){
      success
    }
  }
