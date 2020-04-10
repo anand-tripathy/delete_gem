@@ -7,7 +7,7 @@ puts "environments  from yml #{ENV['INPUT_PACKAGE-NAME']}"
 puts "workspace path #{ENV['GITHUB_WORKSPACE']}"
 puts "workspace all directories #{Dir['*']}"
 
-require "#{ENV['INPUT_PACKAGE-NAME']}/version"
+require_relative "#{ENV['INPUT_PACKAGE-NAME']}/version"
 
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 
