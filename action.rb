@@ -54,7 +54,6 @@ puts "version to be deleted  #{version_to_be_deleted}"
 version_obj = response[:data][(is_org ? :organization : :repository)][:registryPackages][:nodes][0][:versions][:nodes].find {|x| x[:version].to_s == version_to_be_deleted.to_s}
 puts "version object #{version_obj}"
 if !version_obj.nil?
-puts " inside if version present check with query #{mutation}"
   mutation = <<-GRAPHQL
 mutation {
   deletePackageVersion (input:{packageVersionId: #{version_obj[:id]}}){
