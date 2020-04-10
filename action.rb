@@ -76,5 +76,5 @@ query {
 }
 GRAPHQL
 
-response = client.post '/graphql', { query: "#{(( !"#{ENV['INPUT_ORGANISATION-NAME']}".nil? && "#{ENV['INPUT_ORGANISATION-NAME']}".empty?) ? org_query : repo_query)}" }.to_json
+response = client.post '/graphql', { query: "#{(( !"#{ENV['INPUT_ORGANISATION-NAME']}".nil? && !"#{ENV['INPUT_ORGANISATION-NAME']}".empty?) ? org_query : repo_query)}" }.to_json
 ap response
