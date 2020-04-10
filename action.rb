@@ -1,10 +1,12 @@
 require 'awesome_print'
 require 'octokit'
 require 'json'
-require "#{ENV['INPUT_PACKAGE-NAME']}/version"
+
 
 puts "environments  from yml #{ENV['INPUT_PACKAGE-NAME']}"
 puts "workspace path #{ENV['GITHUB_WORKSPACE']}"
+
+require "#{ENV['INPUT_PACKAGE-NAME']}/version"
 
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 
