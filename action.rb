@@ -1,7 +1,8 @@
 require 'awesome_print'
 require 'octokit'
 require 'json'
-
+require 'net/http'
+require 'uri'
 
 puts "environments  from yml #{ENV['INPUT_PACKAGE-NAME']}"
 puts "workspace path #{ENV['GITHUB_WORKSPACE']}"
@@ -54,18 +55,37 @@ puts "version to be deleted  #{version_to_be_deleted}"
 version_obj = response[:data][(is_org ? :organization : :repository)][:registryPackages][:nodes][0][:versions][:nodes].find {|x| x[:version].to_s == version_to_be_deleted.to_s}
 puts "version object #{version_obj}"
 if !version_obj.nil?
-  mutation = <<-GRAPHQL
-mutation {
-  deletePackageVersion (input:{packageVersionId: "#{version_obj[:id]}"}){
-     success
-   }
- }
-GRAPHQL
-  puts " inside if version present check with query #{mutation}"
-  mutation_response = client.post '/graphql', {query: mutation}.to_json
+#   mutation = <<-GRAPHQL
+# mutation {
+#   deletePackageVersion (input:{packageVersionId: "#{version_obj[:id]}"}){
+#      success
+#    }
+#  }
+# GRAPHQL
+#   puts " inside if version present check with query #{mutation}"
+#   mutation_response = client.post '/graphql', {query: mutation}.to_json
   
-  ap mutation_response
+#   ap mutation_response
 
+  uri = URI.parse("https://api.github.com/graphql")
+  request = Net::HTTP::Post.new(uri)
+  request["Accept"] = "application/vnd.github.package-deletes-preview+json"
+  request["Authorization"] = "bearer #{ENV['GITHUB_TOKEN']}"
+  request.body = JSON.dump({
+                               "query" => "mutation { deletePackageVersion(input:{packageVersionId:\"#{version_obj[:id]}\"}) { success }}"
+                           })
+
+  req_options = {
+      use_ssl: uri.scheme == "https",
+  }
+
+  response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+    http.request(request)
+  end
+
+response.code
+ap JSON.parse response.body
+  
 end
 
 
