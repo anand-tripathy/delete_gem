@@ -6,8 +6,9 @@ require 'json'
 puts "environments  from yml #{ENV['INPUT_PACKAGE-NAME']}"
 puts "workspace path #{ENV['GITHUB_WORKSPACE']}"
 puts "workspace all directories #{Dir['*']}"
+puts "current working directory #{Dir.pwd}"
 
-require_relative "#{ENV['INPUT_PACKAGE-NAME']}/version"
+require_relative "#{ENV['GITHUB_WORKSPACE']}/#{ENV['INPUT_PACKAGE-NAME']}/lib/#{ENV['INPUT_PACKAGE-NAME']}/version"
 
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 
