@@ -38,17 +38,14 @@ require 'awesome_print'
 require 'octokit'
 require 'json'
 
-puts "inputs from yml #{ARGV}"
-puts "environments  from yml #{ENV['PACKAGE-NAME']}"
-puts "environments  from yml #{ENV['PACKAGE_NAME']}"
-puts "environments  from yml #{ENV}"
-puts "inputs parsed #{JSON.parse(ARGV[0])}"
+puts "environments  from yml #{ENV['INPUT_PACKAGE-NAME']}"
+
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 
 org_query = <<-GRAPHQL
 query {
-  organization(login: "#{ARGV[2]}") {
-    registryPackages(name: "#{ARGV[0]}", first: 100){
+  organization(login: "#{ENV['INPUT_ORGANISATION-NAME']}") {
+    registryPackages(name: "#{ENV['INPUT_PACKAGE-NAME']}", first: 100){
       nodes{
         versions(last:100){
           nodes{
@@ -64,8 +61,8 @@ GRAPHQL
 
 repo_query = <<-GRAPHQL
 query {
-  repository(owner: "#{ENV['OWNER']}",name: "#{ARGV[3]}") {
-    registryPackages(name: "#{$1}", first: 100){
+  repository(owner: "#{ENV['OWNER']}",name: "#{ENV['INPUT_REPO-NAME']}") {
+    registryPackages(name: "#{ENV['INPUT_PACKAGE-NAME']}", first: 100){
       nodes{
         versions(last:100){
           nodes{
@@ -79,5 +76,5 @@ query {
 }
 GRAPHQL
 
-response = client.post '/graphql', { query: "#{(( !ARGV[2].nil? && ARGV[2].present?) ? org_query : repo_query)}" }.to_json
+response = client.post '/graphql', { query: "#{(( !"#{ENV['INPUT_ORGANISATION-NAME']}".nil? && "#{ENV['INPUT_ORGANISATION-NAME']}".present?) ? org_query : repo_query)}" }.to_json
 ap response
