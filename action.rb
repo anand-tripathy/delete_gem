@@ -1,42 +1,7 @@
-# require "octokit"
-# require "json"
-# #
-# # Each Action has an event passed to it.
-# event = JSON.parse(File.read(ENV['GITHUB_EVENT_PATH']))
-# puts event.inspect
-#
-# # Use GITHUB_TOKEN to interact with the GitHub API
-# client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
-#
-# current_repo = Octokit::Repository.from_url(event["repository"]["html_url"])
-#
-# # Let's grab all the issues for the current repo
-# issues = client.issues(current_repo)
-#
-# puts "***Printing out this repo's issues***"
-# puts issues.inspect
-
-
-# require "uri"
-# require "net/http"
-#
-# url = URI("https://api.github.com/graphql")
-#
-# https = Net::HTTP.new(url.host, url.port);
-# https.use_ssl = true
-#
-# request = Net::HTTP::Post.new(url)
-# request["Content-Type"] = ["application/vnd.github.packages-preview+json", "application/json"]
-# request["Authorization"] = "bearer #{ENV['GITHUB_TOKEN']}"
-# request.body = "{\"query\":\"query{organization(login:\\\"yabx-tech\\\"){registryPackages(name:\\\"accounting\\\", first: 100){nodes {versions(last:100){nodes{id version}}}}}}\"}"
-#
-# response = https.request(request)
-# puts JSON.parse(response.read_body)
-
-
 require 'awesome_print'
 require 'octokit'
 require 'json'
+require "#{ENV['INPUT_PACKAGE-NAME']}/version"
 
 puts "environments  from yml #{ENV['INPUT_PACKAGE-NAME']}"
 
@@ -76,5 +41,29 @@ query {
 }
 GRAPHQL
 
-response = client.post '/graphql', { query: "#{(( !"#{ENV['INPUT_ORGANISATION-NAME']}".nil? && !"#{ENV['INPUT_ORGANISATION-NAME']}".empty?) ? org_query : repo_query)}" }.to_json
+is_org = !"#{ENV['INPUT_ORGANISATION-NAME']}".nil? && !"#{ENV['INPUT_ORGANISATION-NAME']}".empty?
+response = client.post '/graphql', {query: "#{(is_org ? org_query : repo_query)}"}.to_json
 ap response
+version_to_be_deleted = Kernel.const_get("#{ENV['INPUT_PACKAGE-NAME']}".capitalize)::VERSION
+puts "version to be deleted  #{version_to_be_deleted}"
+version_obj = response[:data][(is_org ? :organization : :repository)][:registryPackages][:nodes][0][:versions][:nodes].find {|x| x[:version] == version_to_be_deleted}
+
+if !version_obj.nil?
+
+  mutation = <<-GRAPHQL
+    mutation {
+      deletePackageVersion (input:{packageVersionId: #{version_obj[:id]}}){
+        success
+      }
+    }
+    GRAPHQL
+
+  mutation_response = client.post '/graphql', {query: mutation}.to_json
+  
+  mutation_response
+
+end
+
+
+
+
