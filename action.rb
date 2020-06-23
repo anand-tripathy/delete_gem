@@ -52,7 +52,7 @@ response = client.post '/graphql', {query: "#{(is_org ? org_query : repo_query)}
 ap response
 version_to_be_deleted = Kernel.const_get("#{ENV['INPUT_PACKAGE-NAME']}".capitalize)::VERSION
 puts "version to be deleted  #{version_to_be_deleted}"
-version_obj = response[:data][(is_org ? :organization : :repository)][:registryPackages][:nodes][0][:versions][:nodes].find {|x| x[:version].to_s == version_to_be_deleted.to_s}
+version_obj = response[:data][(is_org ? :organization : :repository)][:packages][:nodes][0][:versions][:nodes].find {|x| x[:version].to_s == version_to_be_deleted.to_s}
 puts "version object #{version_obj}"
 if !version_obj.nil?
 #   mutation = <<-GRAPHQL
