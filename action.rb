@@ -16,16 +16,16 @@ client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 org_query = <<-GRAPHQL
 query {
   organization(login: "#{ENV['INPUT_ORGANISATION-NAME']}") {
-    registryPackages(name: "#{ENV['INPUT_PACKAGE-NAME']}", first: 100){
-      nodes{
-        versions(last:100){
-          nodes{
-            id
-            version
+      packages(names: ["#{ENV['INPUT_PACKAGE-NAME']}"], first: 100){
+        nodes{
+          versions(last:100){
+            nodes{
+              id
+              version
+            }
           }
         }
       }
-    }
   }
 }
 GRAPHQL
@@ -33,7 +33,7 @@ GRAPHQL
 repo_query = <<-GRAPHQL
 query {
   repository(owner: "#{ENV['OWNER']}",name: "#{ENV['INPUT_REPO-NAME']}") {
-    registryPackages(name: "#{ENV['INPUT_PACKAGE-NAME']}", first: 100){
+    packages(names: ["#{ENV['INPUT_PACKAGE-NAME']}"], first: 100){
       nodes{
         versions(last:100){
           nodes{
