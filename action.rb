@@ -13,6 +13,7 @@ require_relative "#{ENV['GITHUB_WORKSPACE']}/#{ENV['INPUT_PACKAGE-NAME']}/lib/#{
 
 client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 version_to_be_deleted = Kernel.const_get("#{ENV['INPUT_PACKAGE-NAME']}".capitalize)::VERSION
+puts version_to_be_deleted
 
 # get all the versions of a package under an organisation
 get_package_versions_url = URI("https://api.github.com/orgs/#{ENV['INPUT_ORGANISATION-NAME']}/packages/rubygems/#{ENV['INPUT_PACKAGE-NAME']}/versions")
@@ -29,13 +30,18 @@ versions_response = JSON.parse response.body
 
 version_url = nil
 versions_response.each do |data|
-  version_url = data['url'] if data['name'] == version_to_be_deleted
+  puts data["name"]
+  puts version_to_be_deleted
+  puts data["name"] == version_to_be_deleted
+
+  version_url = data["url"] if data["name"] == version_to_be_deleted
 end
 # end get package versions
 
+puts version_url
 
 # delete a specific version
-if version_url.present?
+if !version_url.nil?
 
   delete_version_url = URI(version_url)
   https = Net::HTTP.new(delete_version_url.host, delete_version_url.port)
